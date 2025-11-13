@@ -1,6 +1,6 @@
-export const parseRESP = (data) => {
+export const parseRESP = (data: Buffer): string[] => {
   const commands = data.toString().split("\r\n");
-  const result = [];
+  const result: string[] = [];
   if (!commands[0].startsWith("*")) return result;
   const commandCount = parseInt(commands[0].slice(1));
 
