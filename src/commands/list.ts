@@ -113,9 +113,9 @@ export const blpopHandler = (commands: string[], socket: Socket): RESPReply | vo
     return resp.error("ERR wrong number of arguments for 'BLPOP' command");
   }
   const keys = commands.slice(1, -1);
-  const timeout = parseInt(commands[commands.length - 1]);
+  const timeout = parseFloat(commands[commands.length - 1]);
   if (isNaN(timeout) || timeout < 0) {
-    return resp.error("ERR value is not an integer or out of range");
+    return resp.error("ERR timeout is not a float or out of range");
   }
 
   for (const key of keys) {

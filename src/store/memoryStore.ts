@@ -1,4 +1,5 @@
-import type { RedisStoredValue, BlockedClient } from "../utils/types";
+import { encodeRESP } from "../protocol/encodeRESP";
+import { type RedisStoredValue, type BlockedClient, resp } from "../utils/types";
 
 class MemoryStore {
   private store: Map<string, RedisStoredValue>;
@@ -45,7 +46,7 @@ class MemoryStore {
           this.expirations.delete(key);
         }
       }
-    }, 1000);
+    }, 100);
   }
 
   addBlockedClient(keys: string[], client: BlockedClient): void {
@@ -95,8 +96,7 @@ class MemoryStore {
               expiredClients.push(client);
               try {
                 if (!client.socket.destroyed) {
-                  const nullResponse = Buffer.from("$-1\r\n");
-                  client.socket.write(nullResponse);
+                  client.socket.write(encodeRESP(resp.bulk(null)));
                 }
               } catch (err) {
                 // Socket already closed
@@ -109,7 +109,7 @@ class MemoryStore {
       for (const client of expiredClients) {
         this.removeBlockedClient(client);
       }
-    }, 1000);
+    }, 100);
   }
 }
 
