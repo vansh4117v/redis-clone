@@ -1,7 +1,7 @@
 import { memoryStore } from "../store/memoryStore";
-import { resp, type RedisBulkString, type RESPError } from "../utils/types";
+import { resp, type RESPBulkString, type RESPError } from "../utils/types";
 
-export const getHandler = (commands: string[]): RESPError | RedisBulkString => {
+export const getHandler = (commands: string[]): RESPError | RESPBulkString => {
   if (commands.length !== 2) {
     return resp.error("ERR wrong number of arguments for 'get' command");
   }

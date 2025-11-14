@@ -1,6 +1,6 @@
-import { resp, type RedisBulkString, type RESPError } from "../utils/types";
+import { resp, type RESPBulkString, type RESPError } from "../utils/types";
 
-export const echoHandler = (commands: string[]): RedisBulkString | RESPError => {
+export const echoHandler = (commands: string[]): RESPBulkString | RESPError => {
   if (commands.length !== 2) {
     return resp.error("ERR wrong number of arguments for 'echo' command");
   }

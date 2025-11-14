@@ -1,20 +1,20 @@
 import type { Socket } from "net";
 
 export type RESPStatus = { type: "status"; value: string };
-export type RedisBulkString = { type: "bulk"; value: string | null };
+export type RESPBulkString = { type: "bulk"; value: string | null };
 export type RESPInteger = { type: "integer"; value: number };
 export type RESPArray = { type: "array"; value: string[] };
 export type RESPError = { type: "error"; message: string };
 
 export const resp = {
   status: (value: string): RESPStatus => ({ type: "status", value }),
-  bulk: (value: string | null): RedisBulkString => ({ type: "bulk", value }),
+  bulk: (value: string | null): RESPBulkString => ({ type: "bulk", value }),
   integer: (value: number): RESPInteger => ({ type: "integer", value }),
   array: (value: string[]): RESPArray => ({ type: "array", value }),
   error: (message: string): RESPError => ({ type: "error", message }),
 };
 
-export type RESPReply = RESPStatus | RedisBulkString | RESPInteger | RESPArray | RESPError;
+export type RESPReply = RESPStatus | RESPBulkString | RESPInteger | RESPArray | RESPError;
 
 export interface BlockedClient {
   id: string;
