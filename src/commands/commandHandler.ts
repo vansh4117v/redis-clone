@@ -13,6 +13,7 @@ import {
 import { type RESPReply, resp } from "../utils/types";
 import type { Socket } from "net";
 import { encodeRESP } from "../protocol/encodeRESP";
+import { typeHandler } from "./type";
 
 type CommandHandler = (commands: string[], connection: Socket) => RESPReply | void;
 
@@ -27,6 +28,7 @@ const commandHandlerMapping: Record<string, CommandHandler> = {
   llen: llenHandler,
   lpop: lpopHandler,
   blpop: blpopHandler,
+  type:typeHandler,
 };
 
 
