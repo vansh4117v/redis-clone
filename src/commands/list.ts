@@ -42,7 +42,7 @@ export const lrangeHandler = (commands: string[]): RESPReply => {
   const adjustedStart = start < 0 ? Math.max(listValue.length + start, 0) : start;
   const adjustedStop = stop < 0 ? listValue.length + stop + 1 : stop + 1;
   const slice = listValue.slice(adjustedStart, adjustedStop);
-  return resp.array(slice);
+  return resp.array(slice.map((item) => resp.bulk(item)));
 };
 
 export const lpushHandler = (commands: string[]): RESPReply => {
@@ -104,7 +104,7 @@ export const lpopHandler = (commands: string[]): RESPReply => {
   if (value.length === 1) {
     return resp.bulk(value[0]);
   } else {
-    return resp.array(value);
+    return resp.array(value.map((item) => resp.bulk(item)));
   }
 };
 
@@ -127,7 +127,7 @@ export const blpopHandler = (commands: string[], socket: Socket): RESPReply | vo
       if (stored.value.length > 0) {
         const value = stored.value.shift() as string;
         memoryStore.set(key, stored);
-        return resp.array([key, value]);
+        return resp.array([resp.bulk(key), resp.bulk(value)]);
       }
     }
   }
@@ -152,7 +152,7 @@ const notifyBlockedClients = (key: string) => {
       if (list && list.type === "list" && list.value.length > 0) {
         const value = list.value.shift() as string;
         memoryStore.set(key, list);
-        const response = resp.array([key, value]);
+        const response = resp.array([resp.bulk(key), resp.bulk(value)]);
 
         try {
           if (!client.socket.destroyed) {
