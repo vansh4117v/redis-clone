@@ -27,11 +27,31 @@ export type StringValue = { type: "string"; value: string };
 export type ListValue = { type: "list"; value: string[] };
 export type SetValue = { type: "set"; value: Set<string> };
 export type HashValue = { type: "hash"; value: Map<string, string> };
-export type RedisStoredValue = StringValue | ListValue | SetValue | HashValue;
+type StreamEntry = {
+  id: string;
+  data: string[];
+};
+
+export type StreamValue = {
+  type: "stream";
+  value: {
+    lastId: {
+      ms: number;
+      seq: number;
+    };
+    entries: StreamEntry[];
+  };
+};
+
+export type RedisStoredValue = StringValue | ListValue | SetValue | HashValue | StreamValue;
 
 export const createValue = {
   string: (value: string): StringValue => ({ type: "string", value }),
   list: (value: string[]): ListValue => ({ type: "list", value }),
   set: (value: Set<string>): SetValue => ({ type: "set", value }),
   hash: (value: Map<string, string>): HashValue => ({ type: "hash", value }),
+  stream: (value: {
+    lastId: { ms: number; seq: number };
+    entries: StreamEntry[];
+  }): StreamValue => ({ type: "stream", value }),
 };
