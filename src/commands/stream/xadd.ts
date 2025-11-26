@@ -1,7 +1,7 @@
-import { memoryStore } from "../store/memoryStore";
-import { createValue, resp, type RESPReply } from "../utils/types";
+import { memoryStore } from "../../store/memoryStore";
+import { createValue, resp, type RESPBulkString, type RESPError } from "../../utils/types";
 
-export const xaddHandler = (commands: string[]): RESPReply => {
+export const xaddHandler = (commands: string[]): RESPError | RESPBulkString => {
   if (commands.length < 4 || (commands.length - 3) % 2 !== 0) {
     return resp.error("ERR wrong number of arguments for 'XADD' command");
   }
@@ -25,8 +25,8 @@ export const xaddHandler = (commands: string[]): RESPReply => {
 
   const lastId = stream.value.lastId;
 
-  if (id !== "*" && !/^\d+-(\d+|\*)$/.test(id)) {
-    return resp.error("ERR invalid stream ID format");
+  if (id !== "*" && !/^\d+(-(\d+|\*))?$/.test(id)) {
+    return resp.error("ERR Invalid stream ID specified as stream command argument");
   }
 
   let ms: number;
@@ -42,11 +42,11 @@ export const xaddHandler = (commands: string[]): RESPReply => {
       seq = lastId.seq + 1;
     }
   } else {
-    const [msStr, seqStr] = id.split("-");
+    const [msStr, seqStr = "0"] = id.split("-");
     ms = Number(msStr);
 
-    if (!Number.isFinite(ms) || ms < 0) {
-      return resp.error("ERR invalid stream ID format");
+    if (!isFinite(ms) || ms < 0 || !Number.isInteger(ms) || ms > Number.MAX_SAFE_INTEGER) {
+      return resp.error("ERR Invalid stream ID specified as stream command argument");
     }
 
     if (seqStr === "*") {
@@ -61,10 +61,10 @@ export const xaddHandler = (commands: string[]): RESPReply => {
       }
     } else {
       seq = Number(seqStr);
-      if (!Number.isFinite(seq) || seq < 0) {
-        return resp.error("ERR invalid stream ID format");
-      }
-      if (ms === 0 && seq === 0) {
+      
+      if (!isFinite(seq) || seq < 0 || !Number.isInteger(seq) || seq > Number.MAX_SAFE_INTEGER) {
+        return resp.error("ERR Invalid stream ID specified as stream command argument");
+      }      if (ms === 0 && seq === 0) {
         return resp.error("ERR The ID specified in XADD must be greater than 0-0");
       }
       if (ms < lastId.ms || (ms === lastId.ms && seq <= lastId.seq)) {

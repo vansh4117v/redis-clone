@@ -13,7 +13,7 @@ import {
 import { typeHandler } from "./type";
 import { type RESPReply } from "../utils/types";
 import type { Socket } from "net";
-import { xaddHandler } from "./stream";
+import { xaddHandler, xrangeHandler } from "./stream";
 
 type CommandHandler = (commands: string[], connection: Socket) => RESPReply | void;
 
@@ -30,4 +30,5 @@ export const commandRegistry: Record<string, CommandHandler> = {
   blpop: blpopHandler,
   type: typeHandler,
   xadd: xaddHandler,
+  xrange: xrangeHandler,
 };
