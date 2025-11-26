@@ -12,10 +12,7 @@ export const encodeRESP = (reply: RESPReply): string => {
     case "error":
       return `-${reply.message}\r\n`;
     case "array":
-      return (
-        `*${reply.value.length}\r\n` +
-        reply.value.map((str) => encodeRESP({ type: "bulk", value: str })).join("")
-      );
+      return `*${reply.value.length}\r\n` + reply.value.map((item) => encodeRESP(item)).join("");
     default:
       return `-ERR unknown reply type\r\n`;
   }
