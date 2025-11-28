@@ -1,5 +1,6 @@
 import { memoryStore } from "../../store/memoryStore";
 import { createValue, resp, type RESPBulkString, type RESPError } from "../../utils/types";
+import { notifyBlockedStreamClients } from "./xread";
 
 export const xaddHandler = (commands: string[]): RESPError | RESPBulkString => {
   if (commands.length < 4 || (commands.length - 3) % 2 !== 0) {
@@ -84,5 +85,6 @@ export const xaddHandler = (commands: string[]): RESPError | RESPBulkString => {
 
   stream.value.lastId = { ms, seq };
   memoryStore.set(key, stream);
+  notifyBlockedStreamClients(key);
   return resp.bulk(entryId);
 };

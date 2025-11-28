@@ -21,6 +21,11 @@ export interface BlockedClient {
   socket: Socket;
   keys: string[];
   deadline: number | null;
+
+  // For XREAD: map of stream key to the ID to wait for entries after
+  // For list commands: undefined
+  streamIds?: Map<string, { ms: number; seq: number }>;
+  maxCount?: number;
 }
 
 export type StringValue = { type: "string"; value: string };
