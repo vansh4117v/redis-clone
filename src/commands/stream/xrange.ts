@@ -91,7 +91,7 @@ export const xrangeHandler = (commands: string[]): RESPError | RESPArray => {
   }
 
   const resultEntries = [];
-  const startIndex = findEntryIndex(stream.value.entries, start);
+  const startIndex = findEntryIndex(stream.value.entries, start, true);
   if (startIndex === -1) {
     return resp.array([]);
   }
