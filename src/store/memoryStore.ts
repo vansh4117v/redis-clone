@@ -49,8 +49,8 @@ class MemoryStore {
     }, 100);
   }
 
-  addBlockedClient(keys: string[], client: BlockedClient): void {
-    for (const key of keys) {
+  addBlockedClient(client: BlockedClient): void {
+    for (const key of client.keys) {
       const clients = this.blockedClients.get(key) || [];
       clients.push(client);
       this.blockedClients.set(key, clients);

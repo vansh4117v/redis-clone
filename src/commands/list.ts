@@ -139,7 +139,7 @@ export const blpopHandler = (commands: string[], socket: Socket): RESPReply | vo
     keys: keys,
     deadline: deadline,
   };
-  memoryStore.addBlockedClient(keys, blockedClient);
+  memoryStore.addBlockedClient(blockedClient);
 };
 
 const notifyBlockedClients = (key: string) => {
