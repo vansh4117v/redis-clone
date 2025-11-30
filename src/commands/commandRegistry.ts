@@ -1,7 +1,5 @@
 import { pingHandler } from "./ping";
-import { echoHandler } from "./strings/echo";
-import { setHandler } from "./strings/set";
-import { getHandler } from "./strings/get";
+import { echoHandler, setHandler, getHandler, typeHandler, incrHandler } from "./strings";
 import {
   blpopHandler,
   llenHandler,
@@ -10,7 +8,6 @@ import {
   lrangeHandler,
   rpushHandler,
 } from "./lists/list/list";
-import { typeHandler } from "./strings/type";
 import { type RESPReply } from "../utils/types";
 import type { Socket } from "net";
 import { xaddHandler, xrangeHandler, xreadHandler } from "./stream";
@@ -24,6 +21,7 @@ export const commandRegistry: Record<string, CommandHandler> = {
   echo: echoHandler,
   set: setHandler,
   get: getHandler,
+  incr: incrHandler,
   type: typeHandler,
 
   // List commands (operate on list values)
