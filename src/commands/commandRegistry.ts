@@ -1,4 +1,4 @@
-import { pingHandler } from "./connection/ping";
+import { pingHandler } from "./ping";
 import { echoHandler } from "./strings/echo";
 import { setHandler } from "./strings/set";
 import { getHandler } from "./strings/get";
@@ -19,16 +19,22 @@ type CommandHandler = (commands: string[], connection: Socket) => RESPReply | vo
 
 export const commandRegistry: Record<string, CommandHandler> = {
   ping: pingHandler,
+
+  // String commands (operate on string values)
   echo: echoHandler,
   set: setHandler,
   get: getHandler,
+  type: typeHandler,
+
+  // List commands (operate on list values)
   rpush: rpushHandler,
   lrange: lrangeHandler,
   lpush: lpushHandler,
   llen: llenHandler,
   lpop: lpopHandler,
   blpop: blpopHandler,
-  type: typeHandler,
+
+  // Stream commands
   xadd: xaddHandler,
   xrange: xrangeHandler,
   xread: xreadHandler,
