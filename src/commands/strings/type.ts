@@ -1,5 +1,5 @@
-import { memoryStore } from "../store/memoryStore";
-import { resp, type RESPStatus, type RESPError } from "../utils/types";
+import { memoryStore } from "../../store/memoryStore";
+import { resp, type RESPStatus, type RESPError } from "../../utils/types";
 
 export const typeHandler = (commands: string[]): RESPStatus | RESPError => {
   if (commands.length !== 2) {

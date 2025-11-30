@@ -1,7 +1,7 @@
 import type { Socket } from "net";
-import { memoryStore } from "../store/memoryStore";
-import { BlockedClient, createValue, resp, RESPReply } from "../utils/types";
-import { encodeRESP } from "../protocol/encodeRESP";
+import { memoryStore } from "../../../store/memoryStore";
+import { BlockedClient, createValue, resp, RESPReply } from "../../../utils/types";
+import { encodeRESP } from "../../../protocol/encodeRESP";
 
 export const rpushHandler = (commands: string[]): RESPReply => {
   if (commands.length < 3) {
@@ -42,7 +42,7 @@ export const lrangeHandler = (commands: string[]): RESPReply => {
   const adjustedStart = start < 0 ? Math.max(listValue.length + start, 0) : start;
   const adjustedStop = stop < 0 ? listValue.length + stop + 1 : stop + 1;
   const slice = listValue.slice(adjustedStart, adjustedStop);
-  return resp.array(slice.map((item) => resp.bulk(item)));
+  return resp.array(slice.map((item: string) => resp.bulk(item)));
 };
 
 export const lpushHandler = (commands: string[]): RESPReply => {
@@ -104,7 +104,7 @@ export const lpopHandler = (commands: string[]): RESPReply => {
   if (value.length === 1) {
     return resp.bulk(value[0]);
   } else {
-    return resp.array(value.map((item) => resp.bulk(item)));
+    return resp.array(value.map((item: string) => resp.bulk(item)));
   }
 };
 

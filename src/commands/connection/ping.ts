@@ -1,4 +1,4 @@
-import { resp, RESPStatus, type RESPBulkString, type RESPError } from "../utils/types";
+import { resp, RESPStatus, type RESPBulkString, type RESPError } from "../../utils/types";
 
 export const pingHandler = (commands: string[]): RESPError | RESPBulkString | RESPStatus => {
   if (commands.length > 2) {

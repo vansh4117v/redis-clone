@@ -1,7 +1,7 @@
-import { pingHandler } from "./ping";
-import { echoHandler } from "./echo";
-import { setHandler } from "./set";
-import { getHandler } from "./get";
+import { pingHandler } from "./connection/ping";
+import { echoHandler } from "./strings/echo";
+import { setHandler } from "./strings/set";
+import { getHandler } from "./strings/get";
 import {
   blpopHandler,
   llenHandler,
@@ -9,8 +9,8 @@ import {
   lpushHandler,
   lrangeHandler,
   rpushHandler,
-} from "./list";
-import { typeHandler } from "./type";
+} from "./lists/list/list";
+import { typeHandler } from "./strings/type";
 import { type RESPReply } from "../utils/types";
 import type { Socket } from "net";
 import { xaddHandler, xrangeHandler, xreadHandler } from "./stream";
