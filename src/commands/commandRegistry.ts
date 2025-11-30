@@ -7,7 +7,7 @@ import {
   lpushHandler,
   lrangeHandler,
   rpushHandler,
-} from "./lists/list/list";
+} from "./lists";
 import { type RESPReply } from "../utils/types";
 import type { Socket } from "net";
 import { xaddHandler, xrangeHandler, xreadHandler } from "./stream";
