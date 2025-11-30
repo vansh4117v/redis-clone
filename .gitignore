@@ -67,11 +67,7 @@ Thumbs.db
 # Optional VSCode extensions folder
 .vscode-test/
 
-# Optional package manager files
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-bun.lockb
+test.ts
 
 # Optional Docker files
 docker-compose.override.yml
