@@ -2,6 +2,9 @@ import { type RESPReply, resp } from "../utils/types";
 import { encodeRESP } from "../protocol/encodeRESP";
 import { commandRegistry } from "./commandRegistry";
 import type { Socket } from "net";
+import { isInTransaction } from "../utils/isInTransaction";
+import { transactionHandler } from "./transactions/transactionHandler";
+import { transactionCommandsRegistry } from "./transactions/transactionRegistry";
 
 export const commandHandler = (commandArray: string[], connection: Socket): void => {
   if (commandArray.length === 0) {
@@ -11,7 +14,14 @@ export const commandHandler = (commandArray: string[], connection: Socket): void
 
   const command = commandArray[0].toLowerCase();
   let response: RESPReply | void;
-  if (command in commandRegistry) {
+  const socketId = `${connection.remoteAddress}:${connection.remotePort}`;
+  if (isInTransaction(socketId)) {
+    response = transactionHandler(commandArray, connection, socketId);
+  }
+  else if (command in transactionCommandsRegistry) {
+    response = resp.error(`ERR ${command} without MULTI`);;
+  }
+  else if (command in commandRegistry) {
     const handler = commandRegistry[command];
     response = handler(commandArray, connection);
   } else {

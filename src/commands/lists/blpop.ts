@@ -1,6 +1,7 @@
 import type { Socket } from "net";
 import { resp, type RESPArray, type RESPError, type BlockedClient } from "../../utils/types";
 import { memoryStore } from "../../store/memoryStore";
+import { isInTransaction } from "../../utils/isInTransaction";
 
 export const blpopHandler = (commands: string[], socket: Socket): RESPArray | RESPError | void => {
   if (commands.length < 3) {
@@ -26,6 +27,12 @@ export const blpopHandler = (commands: string[], socket: Socket): RESPArray | RE
         return resp.array([resp.bulk(key), resp.bulk(value)]);
       }
     }
+  }
+
+  const socketId = socket.remoteAddress + ":" + socket.remotePort;
+  if (isInTransaction(socketId)) {
+    // In a transaction, BLPOP should not block, return null if no data
+    return resp.array(null);
   }
 
   const deadline = timeout === 0 ? null : Date.now() + timeout * 1000;

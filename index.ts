@@ -13,6 +13,8 @@ const server = net.createServer((connection) => {
 
   connection.on("close", () => {
     memoryStore.removeBlockedClientById(clientId);
+    memoryStore.deleteTransaction(clientId);
+    console.log(`Client disconnected: ${clientId}`);
   });
 
   connection.on("error", (err) => {

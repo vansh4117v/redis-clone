@@ -1,15 +1,17 @@
 import { encodeRESP } from "../protocol/encodeRESP";
-import { type RedisStoredValue, type BlockedClient, resp } from "../utils/types";
+import { type RedisStoredValue, type BlockedClient, resp, type Transaction } from "../utils/types";
 
 class MemoryStore {
   private store: Map<string, RedisStoredValue>;
   private expirations: Map<string, number>;
   private blockedClients: Map<string, BlockedClient[]>;
+  private transactions: Map<string, Transaction>;
 
   constructor() {
     this.store = new Map();
     this.expirations = new Map();
     this.blockedClients = new Map();
+    this.transactions = new Map();
   }
 
   set(key: string, value: RedisStoredValue, ttl: number | null = null): void {
@@ -96,7 +98,7 @@ class MemoryStore {
               expiredClients.push(client);
               try {
                 if (!client.socket.destroyed) {
-                  client.socket.write(encodeRESP(resp.bulk(null)));
+                  client.socket.write(encodeRESP(resp.array(null)));
                 }
               } catch (err) {
                 // Socket already closed
@@ -110,6 +112,18 @@ class MemoryStore {
         this.removeBlockedClient(client);
       }
     }, 100);
+  }
+
+  getTransaction(socketId: string): Transaction | undefined {
+    return this.transactions.get(socketId);
+  }
+
+  setTransaction(socketId: string, client: Transaction): void {
+    this.transactions.set(socketId, client);
+  }
+
+  deleteTransaction(socketId: string): void {
+    this.transactions.delete(socketId);
   }
 }
 

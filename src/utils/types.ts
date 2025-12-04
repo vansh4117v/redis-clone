@@ -28,6 +28,13 @@ export interface BlockedClient {
   maxCount?: number;
 }
 
+export interface Transaction {
+  inMulti: boolean;
+  queuedCommands: string[][];
+  watchedKeys: Map<string, RedisStoredValue | undefined>;
+  connection: Socket;
+}
+
 export type StringValue = { type: "string"; value: string };
 export type ListValue = { type: "list"; value: string[] };
 export type SetValue = { type: "set"; value: Set<string> };

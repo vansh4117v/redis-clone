@@ -11,8 +11,10 @@ import {
 import { type RESPReply } from "../utils/types";
 import type { Socket } from "net";
 import { xaddHandler, xrangeHandler, xreadHandler } from "./stream";
+import { multiHandler } from "./transactions/multi";
+import { watchHandler } from "./transactions/watchHandler";
 
-type CommandHandler = (commands: string[], connection: Socket) => RESPReply | void;
+export type CommandHandler = (commands: string[], connection: Socket) => RESPReply | void;
 
 export const commandRegistry: Record<string, CommandHandler> = {
   ping: pingHandler,
@@ -36,4 +38,9 @@ export const commandRegistry: Record<string, CommandHandler> = {
   xadd: xaddHandler,
   xrange: xrangeHandler,
   xread: xreadHandler,
+
+  // transaction 
+  multi: multiHandler,
+  watch: watchHandler,
+  // exec and discard are handled separately in commands/transactions/transactionHandler.ts
 };

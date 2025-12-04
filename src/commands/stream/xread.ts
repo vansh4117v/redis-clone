@@ -3,6 +3,7 @@ import { BlockedClient, resp, StreamValue, type RESPReply } from "../../utils/ty
 import { memoryStore } from "../../store/memoryStore";
 import { findEntryIndex } from "./utils";
 import { encodeRESP } from "../../protocol/encodeRESP";
+import { isInTransaction } from "../../utils/isInTransaction";
 
 const validateId = (id: string): { ms: number; seq: number } | null => {
   // Must match pattern: digits-digits or just digits
@@ -163,7 +164,9 @@ export const xreadHandler = (commands: string[], connection: Socket): RESPReply 
       responses.push(resp.array([resp.bulk(key), resp.array(streamEntries)]));
     }
   }
-  if (timeout !== null && responses.length === 0 && blockedStreams.size > 0) {
+
+  const socketId = connection.remoteAddress + ":" + connection.remotePort;
+  if (timeout !== null && responses.length === 0 && blockedStreams.size > 0 && !isInTransaction(socketId)) {
     const blockedClient: BlockedClient = {
       id: connection.remoteAddress + ":" + connection.remotePort,
       socket: connection,
