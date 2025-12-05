@@ -1,7 +1,7 @@
 import type { Socket } from "net";
-import { resp, type RESPArray, type RESPError, type BlockedClient } from "../../utils/types";
-import { memoryStore } from "../../store/memoryStore";
-import { isInTransaction } from "../../utils/isInTransaction";
+import { resp, type RESPArray, type RESPError, type BlockedClient } from "../../utils/types.js";
+import { memoryStore } from "../../store/memoryStore.js";
+import { isInTransaction } from "../../utils/isInTransaction.js";
 
 export const blpopHandler = (commands: string[], socket: Socket): RESPArray | RESPError | void => {
   if (commands.length < 3) {

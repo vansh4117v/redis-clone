@@ -1,6 +1,6 @@
-export { rpushHandler } from "./rpush";
-export { lrangeHandler } from "./lrange";
-export { lpushHandler } from "./lpush";
-export { llenHandler } from "./llen";
-export { lpopHandler } from "./lpop";
-export { blpopHandler } from "./blpop";
+export { rpushHandler } from "./rpush.js";
+export { lrangeHandler } from "./lrange.js";
+export { lpushHandler } from "./lpush.js";
+export { llenHandler } from "./llen.js";
+export { lpopHandler } from "./lpop.js";
+export { blpopHandler } from "./blpop.js";

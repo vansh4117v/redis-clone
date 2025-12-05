@@ -1,5 +1,5 @@
-import { resp, type RESPArray, type RESPError } from "../../utils/types";
-import { memoryStore } from "../../store/memoryStore";
+import { resp, type RESPArray, type RESPError } from "../../utils/types.js";
+import { memoryStore } from "../../store/memoryStore.js";
 
 export const lrangeHandler = (commands: string[]): RESPArray | RESPError => {
   if (commands.length !== 4) {

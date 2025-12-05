@@ -1,4 +1,4 @@
-import type { StreamEntry } from "../../utils/types";
+import type { StreamEntry } from "../../utils/types.js";
 
 export const compareIds = (id1: { ms: number; seq: number }, id2: { ms: number; seq: number }) => {
   if (id1.ms !== id2.ms) {
@@ -28,4 +28,3 @@ export const findEntryIndex = (
   }
   return ind;
 };
-

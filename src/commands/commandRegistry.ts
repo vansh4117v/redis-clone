@@ -1,5 +1,5 @@
-import { pingHandler } from "./ping";
-import { echoHandler, setHandler, getHandler, typeHandler, incrHandler } from "./strings";
+import { pingHandler } from "./ping.js";
+import { echoHandler, setHandler, getHandler, typeHandler, incrHandler } from "./strings/index.js";
 import {
   blpopHandler,
   llenHandler,
@@ -7,12 +7,12 @@ import {
   lpushHandler,
   lrangeHandler,
   rpushHandler,
-} from "./lists";
-import { type RESPReply } from "../utils/types";
+} from "./lists/index.js";
+import { type RESPReply } from "../utils/types.js";
 import type { Socket } from "net";
-import { xaddHandler, xrangeHandler, xreadHandler } from "./stream";
-import { multiHandler } from "./transactions/multi";
-import { watchHandler } from "./transactions/watchHandler";
+import { xaddHandler, xrangeHandler, xreadHandler } from "./stream/index.js";
+import { multiHandler } from "./transactions/multi.js";
+import { watchHandler } from "./transactions/watchHandler.js";
 
 export type CommandHandler = (commands: string[], connection: Socket) => RESPReply | void;
 
@@ -39,7 +39,7 @@ export const commandRegistry: Record<string, CommandHandler> = {
   xrange: xrangeHandler,
   xread: xreadHandler,
 
-  // transaction 
+  // transaction
   multi: multiHandler,
   watch: watchHandler,
   // exec and discard are handled separately in commands/transactions/transactionHandler.ts

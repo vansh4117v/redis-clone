@@ -1,6 +1,6 @@
 import type { Socket } from "net";
-import { resp, type RESPError, type RESPStatus } from "../../utils/types";
-import { memoryStore } from "../../store/memoryStore";
+import { resp, type RESPError, type RESPStatus } from "../../utils/types.js";
+import { memoryStore } from "../../store/memoryStore.js";
 
 export const discardHandler = (
   commands: string[],

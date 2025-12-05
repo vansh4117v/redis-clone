@@ -1,6 +1,6 @@
 import type { Socket } from "net";
-import { resp, type RESPError, type RESPStatus, Transaction } from "../../utils/types";
-import { memoryStore } from "../../store/memoryStore";
+import { resp, type RESPError, type RESPStatus, Transaction } from "../../utils/types.js";
+import { memoryStore } from "../../store/memoryStore.js";
 
 export const multiHandler = (commands: string[], connection: Socket): RESPError | RESPStatus => {
   if (commands.length !== 1) {
@@ -18,12 +18,11 @@ export const multiHandler = (commands: string[], connection: Socket): RESPError 
     };
     memoryStore.setTransaction(socketId, newTransaction);
     return resp.status("OK");
-  }
-  else if (transaction.inMulti) {
+  } else if (transaction.inMulti) {
     return resp.error("ERR MULTI calls can not be nested");
   }
-  
+
   transaction.inMulti = true;
   transaction.queuedCommands = [];
   return resp.status("OK");
-}
+};

@@ -1,5 +1,5 @@
-import { memoryStore } from "../../store/memoryStore";
-import { resp, type RESPBulkString, type RESPError } from "../../utils/types";
+import { memoryStore } from "../../store/memoryStore.js";
+import { resp, type RESPBulkString, type RESPError } from "../../utils/types.js";
 
 export const getHandler = (commands: string[]): RESPError | RESPBulkString => {
   if (commands.length !== 2) {

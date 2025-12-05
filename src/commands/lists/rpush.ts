@@ -1,6 +1,6 @@
-import { createValue, resp, type RESPInteger, type RESPError } from "../../utils/types";
-import { memoryStore } from "../../store/memoryStore";
-import { notifyBlockedClients } from "./notify";
+import { createValue, resp, type RESPInteger, type RESPError } from "../../utils/types.js";
+import { memoryStore } from "../../store/memoryStore.js";
+import { notifyBlockedClients } from "./notify.js";
 
 export const rpushHandler = (commands: string[]): RESPInteger | RESPError => {
   if (commands.length < 3) {

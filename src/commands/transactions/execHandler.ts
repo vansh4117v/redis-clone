@@ -1,8 +1,8 @@
 import type { Socket } from "net";
-import { resp, type RESPReply, type Transaction } from "../../utils/types";
-import { isEqual } from "../../utils/isEqual";
-import { memoryStore } from "../../store/memoryStore";
-import { commandRegistry } from "../commandRegistry";
+import { resp, type RESPReply, type Transaction } from "../../utils/types.js";
+import { isEqual } from "../../utils/isEqual.js";
+import { memoryStore } from "../../store/memoryStore.js";
+import { commandRegistry } from "../commandRegistry.js";
 
 export const execHandler = (commands: string[], connection: Socket, socketId: string) => {
   if (commands.length !== 1) {

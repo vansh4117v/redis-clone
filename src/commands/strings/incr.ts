@@ -1,5 +1,5 @@
-import { memoryStore } from "../../store/memoryStore";
-import { resp, type RESPError, type RESPInteger } from "../../utils/types";
+import { memoryStore } from "../../store/memoryStore.js";
+import { resp, type RESPError, type RESPInteger } from "../../utils/types.js";
 
 const MIN = -(1n << 63n); // -2^63
 const MAX = (1n << 63n) - 1n; // 2^63 - 1

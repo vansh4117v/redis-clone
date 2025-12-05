@@ -1,4 +1,4 @@
-import { resp, type RESPBulkString, type RESPError } from "../../utils/types";
+import { resp, type RESPBulkString, type RESPError } from "../../utils/types.js";
 
 export const echoHandler = (commands: string[]): RESPBulkString | RESPError => {
   if (commands.length !== 2) {

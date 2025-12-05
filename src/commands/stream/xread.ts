@@ -1,9 +1,9 @@
 import type { Socket } from "net";
-import { BlockedClient, resp, StreamValue, type RESPReply } from "../../utils/types";
-import { memoryStore } from "../../store/memoryStore";
-import { findEntryIndex } from "./utils";
-import { encodeRESP } from "../../protocol/encodeRESP";
-import { isInTransaction } from "../../utils/isInTransaction";
+import { BlockedClient, resp, StreamValue, type RESPReply } from "../../utils/types.js";
+import { memoryStore } from "../../store/memoryStore.js";
+import { findEntryIndex } from "./utils.js";
+import { encodeRESP } from "../../protocol/encodeRESP.js";
+import { isInTransaction } from "../../utils/isInTransaction.js";
 
 const validateId = (id: string): { ms: number; seq: number } | null => {
   // Must match pattern: digits-digits or just digits
@@ -83,7 +83,7 @@ export const xreadHandler = (commands: string[], connection: Socket): RESPReply 
 
   // Validate all IDs and check stream types first, store validated IDs
   const validatedIds: Array<{ ms: number; seq: number } | "$" | "+"> = [];
-  
+
   for (let j = 0; j < streamCount; j++) {
     const key = commands[startIndex + j];
     const id = commands[startIndex + streamCount + j];
@@ -166,7 +166,12 @@ export const xreadHandler = (commands: string[], connection: Socket): RESPReply 
   }
 
   const socketId = connection.remoteAddress + ":" + connection.remotePort;
-  if (timeout !== null && responses.length === 0 && blockedStreams.size > 0 && !isInTransaction(socketId)) {
+  if (
+    timeout !== null &&
+    responses.length === 0 &&
+    blockedStreams.size > 0 &&
+    !isInTransaction(socketId)
+  ) {
     const blockedClient: BlockedClient = {
       id: connection.remoteAddress + ":" + connection.remotePort,
       socket: connection,
@@ -190,7 +195,7 @@ export const notifyBlockedStreamClients = (key: string) => {
 
   for (const client of blockedClients) {
     if (!client.streamIds) continue; // Not a stream blocked client
-    
+
     if (client.deadline === null || client.deadline > now) {
       const maxCount = client.maxCount ?? Infinity;
       const responses: RESPReply[] = [];
@@ -211,10 +216,7 @@ export const notifyBlockedStreamClients = (key: string) => {
         while (currentIndex < stream.value.entries.length && count < maxCount) {
           const entry = stream.value.entries[currentIndex];
           streamEntries.push(
-            resp.array([
-              resp.bulk(entry.id),
-              resp.array(entry.data.map((item) => resp.bulk(item))),
-            ])
+            resp.array([resp.bulk(entry.id), resp.array(entry.data.map((item) => resp.bulk(item)))])
           );
           count++;
           currentIndex++;

@@ -1,5 +1,5 @@
-import { memoryStore } from "../../store/memoryStore";
-import { resp, type RESPError, type RESPStatus } from "../../utils/types";
+import { memoryStore } from "../../store/memoryStore.js";
+import { resp, type RESPError, type RESPStatus } from "../../utils/types.js";
 
 export const setHandler = (commands: string[]): RESPError | RESPStatus => {
   if (commands.length < 3) {

@@ -1,5 +1,5 @@
-import { resp, type RESPBulkString, type RESPArray, type RESPError } from "../../utils/types";
-import { memoryStore } from "../../store/memoryStore";
+import { resp, type RESPBulkString, type RESPArray, type RESPError } from "../../utils/types.js";
+import { memoryStore } from "../../store/memoryStore.js";
 
 export const lpopHandler = (commands: string[]): RESPBulkString | RESPArray | RESPError => {
   if (commands.length !== 3 && commands.length !== 2) {

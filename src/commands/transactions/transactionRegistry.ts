@@ -1,7 +1,7 @@
-import { execHandler } from "./execHandler";
-import { discardHandler } from "./discardHandler";
 import type { Socket } from "net";
-import type { RESPReply } from "../../utils/types";
+import type { RESPReply } from "../../utils/types.js";
+import { execHandler } from "./execHandler.js";
+import { discardHandler } from "./discardHandler.js";
 
 type TransactionCommandHandler = (
   commands: string[],

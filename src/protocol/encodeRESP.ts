@@ -1,4 +1,4 @@
-import type { RESPReply } from "../utils/types";
+import type { RESPReply } from "../utils/types.js";
 
 export const encodeRESP = (reply: RESPReply): string => {
   switch (reply.type) {

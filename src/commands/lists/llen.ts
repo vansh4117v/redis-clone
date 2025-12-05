@@ -1,5 +1,5 @@
-import { resp, type RESPInteger, type RESPError } from "../../utils/types";
-import { memoryStore } from "../../store/memoryStore";
+import { resp, type RESPInteger, type RESPError } from "../../utils/types.js";
+import { memoryStore } from "../../store/memoryStore.js";
 
 export const llenHandler = (commands: string[]): RESPInteger | RESPError => {
   if (commands.length !== 2) {

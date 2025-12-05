@@ -1,6 +1,6 @@
-import { memoryStore } from "../../store/memoryStore";
-import { createValue, resp, type RESPBulkString, type RESPError } from "../../utils/types";
-import { notifyBlockedStreamClients } from "./xread";
+import { memoryStore } from "../../store/memoryStore.js";
+import { createValue, resp, type RESPBulkString, type RESPError } from "../../utils/types.js";
+import { notifyBlockedStreamClients } from "./xread.js";
 
 export const xaddHandler = (commands: string[]): RESPError | RESPBulkString => {
   if (commands.length < 4 || (commands.length - 3) % 2 !== 0) {
@@ -62,10 +62,11 @@ export const xaddHandler = (commands: string[]): RESPError | RESPBulkString => {
       }
     } else {
       seq = Number(seqStr);
-      
+
       if (!isFinite(seq) || seq < 0 || !Number.isInteger(seq) || seq > Number.MAX_SAFE_INTEGER) {
         return resp.error("ERR Invalid stream ID specified as stream command argument");
-      }      if (ms === 0 && seq === 0) {
+      }
+      if (ms === 0 && seq === 0) {
         return resp.error("ERR The ID specified in XADD must be greater than 0-0");
       }
       if (ms < lastId.ms || (ms === lastId.ms && seq <= lastId.seq)) {

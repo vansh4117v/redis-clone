@@ -1,7 +1,7 @@
-import { parseRESP } from "./src/protocol/parseRESP";
+import { parseRESP } from "./src/protocol/parseRESP.js";
 import net from "net";
-import { commandHandler } from "./src/commands/commandHandler";
-import { memoryStore } from "./src/store/memoryStore";
+import { commandHandler } from "./src/commands/commandHandler.js";
+import { memoryStore } from "./src/store/memoryStore.js";
 
 const server = net.createServer((connection) => {
   const clientId = `${connection.remoteAddress}:${connection.remotePort}`;

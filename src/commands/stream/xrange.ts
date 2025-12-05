@@ -1,6 +1,6 @@
-import { memoryStore } from "../../store/memoryStore";
-import { resp, type RESPArray, type RESPError } from "../../utils/types";
-import { compareIds, findEntryIndex } from "./utils";
+import { memoryStore } from "../../store/memoryStore.js";
+import { resp, type RESPArray, type RESPError } from "../../utils/types.js";
+import { compareIds, findEntryIndex } from "./utils.js";
 
 export const xrangeHandler = (commands: string[]): RESPError | RESPArray => {
   if (commands.length !== 4 && commands.length !== 6) {

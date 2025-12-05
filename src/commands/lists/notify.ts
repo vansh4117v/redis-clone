@@ -1,6 +1,6 @@
-import { memoryStore } from "../../store/memoryStore";
-import { resp } from "../../utils/types";
-import { encodeRESP } from "../../protocol/encodeRESP";
+import { memoryStore } from "../../store/memoryStore.js";
+import { resp } from "../../utils/types.js";
+import { encodeRESP } from "../../protocol/encodeRESP.js";
 
 export const notifyBlockedClients = (key: string): void => {
   const now = Date.now();

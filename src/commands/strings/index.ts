@@ -1,5 +1,5 @@
-export { echoHandler } from "./echo";
-export { getHandler } from "./get";
-export { setHandler } from "./set";
-export { typeHandler } from "./type";
-export { incrHandler } from "./incr";
+export { echoHandler } from "./echo.js";
+export { getHandler } from "./get.js";
+export { setHandler } from "./set.js";
+export { typeHandler } from "./type.js";
+export { incrHandler } from "./incr.js";

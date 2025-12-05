@@ -1,5 +1,10 @@
-import { encodeRESP } from "../protocol/encodeRESP";
-import { type RedisStoredValue, type BlockedClient, resp, type Transaction } from "../utils/types";
+import { encodeRESP } from "../protocol/encodeRESP.js";
+import {
+  type RedisStoredValue,
+  type BlockedClient,
+  resp,
+  type Transaction,
+} from "../utils/types.js";
 
 class MemoryStore {
   private store: Map<string, RedisStoredValue>;
@@ -94,7 +99,7 @@ class MemoryStore {
       for (const [key, clients] of this.blockedClients.entries()) {
         for (const client of clients) {
           if (client.deadline !== null && now > client.deadline) {
-            if (!expiredClients.some(c => c.id === client.id)) {
+            if (!expiredClients.some((c) => c.id === client.id)) {
               expiredClients.push(client);
               try {
                 if (!client.socket.destroyed) {

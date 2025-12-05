@@ -1,8 +1,8 @@
 import type { Socket } from "net";
-import { resp, type RESPReply } from "../../utils/types";
-import { commandRegistry } from "../commandRegistry";
-import { memoryStore } from "../../store/memoryStore";
-import { transactionCommandsRegistry } from "./transactionRegistry";
+import { resp, type RESPReply } from "../../utils/types.js";
+import { commandRegistry } from "../commandRegistry.js";
+import { memoryStore } from "../../store/memoryStore.js";
+import { transactionCommandsRegistry } from "./transactionRegistry.js";
 
 export const transactionHandler = (
   commands: string[],
@@ -23,7 +23,7 @@ export const transactionHandler = (
       if (command === "watch" || command === "multi") {
         return resp.error(`ERR ${command} inside MULTI is not allowed`);
       }
-      
+
       const transaction = memoryStore.getTransaction(socketId);
       transaction?.queuedCommands.push(commands);
       return resp.status("QUEUED");

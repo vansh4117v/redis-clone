@@ -1,4 +1,4 @@
-import { type RedisStoredValue } from "./types";
+import { type RedisStoredValue } from "./types.js";
 
 export function isEqual(a: RedisStoredValue | undefined, b: RedisStoredValue | undefined): boolean {
   if (a === b) return true;
@@ -11,7 +11,7 @@ export function isEqual(a: RedisStoredValue | undefined, b: RedisStoredValue | u
 
   if (valA === valB) return true;
 
-  if (valA && valB && typeof valA === 'object' && typeof valB === 'object') {
+  if (valA && valB && typeof valA === "object" && typeof valB === "object") {
     if (valA instanceof Map && valB instanceof Map) {
       if (valA.size !== valB.size) return false;
       for (const [key, value] of valA) {

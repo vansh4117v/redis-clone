@@ -1,6 +1,6 @@
 import type { Socket } from "net";
-import { resp, type Transaction } from "../../utils/types";
-import { memoryStore } from "../../store/memoryStore";
+import { resp, type Transaction } from "../../utils/types.js";
+import { memoryStore } from "../../store/memoryStore.js";
 
 export const watchHandler = (commands: string[], connection: Socket) => {
   if (commands.length < 2) {

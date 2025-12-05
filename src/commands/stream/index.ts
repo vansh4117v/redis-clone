@@ -1,3 +1,3 @@
-export { xaddHandler } from "./xadd";
-export { xrangeHandler } from "./xrange";
-export { xreadHandler } from "./xread";
+export { xaddHandler } from "./xadd.js";
+export { xrangeHandler } from "./xrange.js";
+export { xreadHandler } from "./xread.js";
