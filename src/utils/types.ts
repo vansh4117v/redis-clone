@@ -32,7 +32,10 @@ export interface Transaction {
   inMulti: boolean;
   queuedCommands: string[][];
   watchedKeys: Map<string, RedisStoredValue | undefined>;
-  connection: Socket;
+}
+
+export interface RedisConnection extends Socket {
+  transaction?: Transaction;
 }
 
 export type StringValue = { type: "string"; value: string };

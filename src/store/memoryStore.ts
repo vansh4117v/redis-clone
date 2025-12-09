@@ -10,13 +10,11 @@ class MemoryStore {
   private store: Map<string, RedisStoredValue>;
   private expirations: Map<string, number>;
   private blockedClients: Map<string, BlockedClient[]>;
-  private transactions: Map<string, Transaction>;
 
   constructor() {
     this.store = new Map();
     this.expirations = new Map();
     this.blockedClients = new Map();
-    this.transactions = new Map();
   }
 
   set(key: string, value: RedisStoredValue, ttl: number | null = null): void {
@@ -119,17 +117,6 @@ class MemoryStore {
     }, 100);
   }
 
-  getTransaction(socketId: string): Transaction | undefined {
-    return this.transactions.get(socketId);
-  }
-
-  setTransaction(socketId: string, client: Transaction): void {
-    this.transactions.set(socketId, client);
-  }
-
-  deleteTransaction(socketId: string): void {
-    this.transactions.delete(socketId);
-  }
 }
 
 export const memoryStore = new MemoryStore();

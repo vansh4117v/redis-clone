@@ -1,15 +1,12 @@
-import type { Socket } from "net";
-import { resp, type RESPError, type RESPStatus } from "../../utils/types.js";
-import { memoryStore } from "../../store/memoryStore.js";
+import { type RedisConnection, resp, type RESPError, type RESPStatus } from "../../utils/types.js";
 
 export const discardHandler = (
   commands: string[],
-  connection: Socket,
-  socketId: string
+  connection: RedisConnection
 ): RESPStatus | RESPError => {
   if (commands.length !== 1) {
     return resp.error("ERR wrong number of arguments for 'discard' command");
   }
-  memoryStore.deleteTransaction(socketId);
+  connection.transaction = undefined;
   return resp.status("OK");
 };

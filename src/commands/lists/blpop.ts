@@ -1,9 +1,17 @@
-import type { Socket } from "net";
-import { resp, type RESPArray, type RESPError, type BlockedClient } from "../../utils/types.js";
+import {
+  resp,
+  type RESPArray,
+  type RESPError,
+  type BlockedClient,
+  type RedisConnection,
+} from "../../utils/types.js";
 import { memoryStore } from "../../store/memoryStore.js";
-import { isInTransaction } from "../../utils/isInTransaction.js";
+// import { isInTransaction } from "../../utils/isInTransaction.js";
 
-export const blpopHandler = (commands: string[], socket: Socket): RESPArray | RESPError | void => {
+export const blpopHandler = (
+  commands: string[],
+  socket: RedisConnection
+): RESPArray | RESPError | void => {
   if (commands.length < 3) {
     return resp.error("ERR wrong number of arguments for 'BLPOP' command");
   }
@@ -29,8 +37,7 @@ export const blpopHandler = (commands: string[], socket: Socket): RESPArray | RE
     }
   }
 
-  const socketId = socket.remoteAddress + ":" + socket.remotePort;
-  if (isInTransaction(socketId)) {
+  if (socket.transaction && socket.transaction.inMulti) {
     // In a transaction, BLPOP should not block, return null if no data
     return resp.array(null);
   }

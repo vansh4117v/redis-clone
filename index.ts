@@ -2,8 +2,9 @@ import { parseRESP } from "./src/protocol/parseRESP.js";
 import net from "net";
 import { commandHandler } from "./src/commands/commandHandler.js";
 import { memoryStore } from "./src/store/memoryStore.js";
+import { RedisConnection } from "./src/utils/types.js";
 
-const server = net.createServer((connection) => {
+const server = net.createServer((connection: RedisConnection) => {
   const clientId = `${connection.remoteAddress}:${connection.remotePort}`;
 
   connection.on("data", (data) => {
@@ -13,7 +14,6 @@ const server = net.createServer((connection) => {
 
   connection.on("close", () => {
     memoryStore.removeBlockedClientById(clientId);
-    memoryStore.deleteTransaction(clientId);
     console.log(`Client disconnected: ${clientId}`);
   });
 

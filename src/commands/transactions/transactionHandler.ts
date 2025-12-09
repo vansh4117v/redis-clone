@@ -1,14 +1,8 @@
-import type { Socket } from "net";
-import { resp, type RESPReply } from "../../utils/types.js";
+import { type RedisConnection, resp, type RESPReply, Transaction } from "../../utils/types.js";
 import { commandRegistry } from "../commandRegistry.js";
-import { memoryStore } from "../../store/memoryStore.js";
 import { transactionCommandsRegistry } from "./transactionRegistry.js";
 
-export const transactionHandler = (
-  commands: string[],
-  connection: Socket,
-  socketId: string
-): RESPReply => {
+export const transactionHandler = (commands: string[], connection: RedisConnection): RESPReply => {
   if (commands.length === 0) {
     return resp.error("ERR unknown command");
   }
@@ -17,15 +11,16 @@ export const transactionHandler = (
 
   if (command in transactionCommandsRegistry) {
     const handler = transactionCommandsRegistry[command];
-    return handler(commands, connection, socketId);
+    return handler(commands, connection);
   } else {
     if (command in commandRegistry) {
       if (command === "watch" || command === "multi") {
         return resp.error(`ERR ${command} inside MULTI is not allowed`);
       }
 
-      const transaction = memoryStore.getTransaction(socketId);
-      transaction?.queuedCommands.push(commands);
+      // transaction is guaranteed to exist here as checked in commandHandler
+      const transaction = connection.transaction as Transaction;
+      transaction.queuedCommands.push(commands);
       return resp.status("QUEUED");
     } else {
       return resp.error(`ERR unknown command '${command}'`);

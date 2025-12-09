@@ -1,9 +1,13 @@
-import type { Socket } from "net";
-import { BlockedClient, resp, StreamValue, type RESPReply } from "../../utils/types.js";
+import {
+  BlockedClient,
+  RedisConnection,
+  resp,
+  StreamValue,
+  type RESPReply,
+} from "../../utils/types.js";
 import { memoryStore } from "../../store/memoryStore.js";
 import { findEntryIndex } from "./utils.js";
 import { encodeRESP } from "../../protocol/encodeRESP.js";
-import { isInTransaction } from "../../utils/isInTransaction.js";
 
 const validateId = (id: string): { ms: number; seq: number } | null => {
   // Must match pattern: digits-digits or just digits
@@ -30,7 +34,7 @@ const validateId = (id: string): { ms: number; seq: number } | null => {
   return { ms, seq };
 };
 
-export const xreadHandler = (commands: string[], connection: Socket): RESPReply | void => {
+export const xreadHandler = (commands: string[], connection: RedisConnection): RESPReply | void => {
   let i = 1;
   let maxCount = Infinity;
   let timeout: number | null = null;
@@ -165,12 +169,11 @@ export const xreadHandler = (commands: string[], connection: Socket): RESPReply 
     }
   }
 
-  const socketId = connection.remoteAddress + ":" + connection.remotePort;
   if (
     timeout !== null &&
     responses.length === 0 &&
     blockedStreams.size > 0 &&
-    !isInTransaction(socketId)
+    !(connection.transaction && connection.transaction.inMulti)
   ) {
     const blockedClient: BlockedClient = {
       id: connection.remoteAddress + ":" + connection.remotePort,

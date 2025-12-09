@@ -8,13 +8,12 @@ import {
   lrangeHandler,
   rpushHandler,
 } from "./lists/index.js";
-import { type RESPReply } from "../utils/types.js";
-import type { Socket } from "net";
+import { type RESPReply, type RedisConnection } from "../utils/types.js";
 import { xaddHandler, xrangeHandler, xreadHandler } from "./stream/index.js";
 import { multiHandler } from "./transactions/multi.js";
 import { watchHandler } from "./transactions/watchHandler.js";
 
-export type CommandHandler = (commands: string[], connection: Socket) => RESPReply | void;
+export type CommandHandler = (commands: string[], connection: RedisConnection) => RESPReply | void;
 
 export const commandRegistry: Record<string, CommandHandler> = {
   ping: pingHandler,

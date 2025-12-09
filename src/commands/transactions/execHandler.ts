@@ -1,23 +1,22 @@
-import type { Socket } from "net";
-import { resp, type RESPReply, type Transaction } from "../../utils/types.js";
+import { type RedisConnection, resp, type RESPReply, type Transaction } from "../../utils/types.js";
 import { isEqual } from "../../utils/isEqual.js";
 import { memoryStore } from "../../store/memoryStore.js";
 import { commandRegistry } from "../commandRegistry.js";
 
-export const execHandler = (commands: string[], connection: Socket, socketId: string) => {
+export const execHandler = (commands: string[], connection: RedisConnection) => {
   if (commands.length !== 1) {
     return resp.error("ERR wrong number of arguments for 'exec' command");
   }
   const responses: RESPReply[] = [];
 
   // transaction is guaranteed to exist here as checked in commandHandler
-  const transaction = memoryStore.getTransaction(socketId) as Transaction;
+  const transaction = connection.transaction as Transaction;
 
   for (const [key, originalValue] of transaction.watchedKeys) {
     const currentValue = memoryStore.get(key);
     // Deep comparison for watched values using isEqual utility
     if (!isEqual(currentValue, originalValue)) {
-      memoryStore.deleteTransaction(socketId);
+      connection.transaction = undefined;
       return resp.bulk(null);
     }
   }
@@ -31,6 +30,6 @@ export const execHandler = (commands: string[], connection: Socket, socketId: st
       responses.push(response as RESPReply);
     }
   }
-  memoryStore.deleteTransaction(socketId);
+  connection.transaction = undefined;
   return resp.array(responses);
 };

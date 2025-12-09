@@ -1,28 +1,25 @@
-import type { Socket } from "net";
-import { resp, type Transaction } from "../../utils/types.js";
+import { type RedisConnection, resp, type Transaction } from "../../utils/types.js";
 import { memoryStore } from "../../store/memoryStore.js";
 
-export const watchHandler = (commands: string[], connection: Socket) => {
+export const watchHandler = (commands: string[], connection: RedisConnection) => {
   if (commands.length < 2) {
     return resp.error("ERR wrong number of arguments for 'watch' command");
   }
-  const socketId = `${connection.remoteAddress}:${connection.remotePort}`;
   const keysToWatch = commands.slice(1);
-  let transaction = memoryStore.getTransaction(socketId);
+  const transaction = connection.transaction;
 
   if (!transaction) {
     const newTransaction: Transaction = {
       inMulti: false,
       queuedCommands: [],
       watchedKeys: new Map(),
-      connection,
     };
 
     for (const key of keysToWatch) {
       const value = memoryStore.get(key);
       newTransaction.watchedKeys.set(key, value);
     }
-    memoryStore.setTransaction(socketId, newTransaction);
+    connection.transaction = newTransaction;
   } else {
     if (transaction.inMulti) {
       return resp.error("ERR WATCH inside MULTI is not allowed");
