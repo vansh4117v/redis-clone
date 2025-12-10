@@ -1,6 +1,7 @@
 import { type RedisConnection, resp, type RESPReply, Transaction } from "../../utils/types.js";
 import { commandRegistry } from "../commandRegistry.js";
-import { transactionCommandsRegistry } from "./transactionRegistry.js";
+import { discardHandler } from "./discardHandler.js";
+import { execHandler } from "./execHandler.js";
 
 export const transactionHandler = (commands: string[], connection: RedisConnection): RESPReply => {
   if (commands.length === 0) {
@@ -9,10 +10,13 @@ export const transactionHandler = (commands: string[], connection: RedisConnecti
 
   const command = commands[0].toLowerCase();
 
-  if (command in transactionCommandsRegistry) {
-    const handler = transactionCommandsRegistry[command];
-    return handler(commands, connection);
-  } else {
+  if (command === "exec") {
+    return execHandler(commands, connection);
+  }
+  else if (command === "discard") {
+    return discardHandler(commands, connection);
+  }
+  else {
     if (command in commandRegistry) {
       if (command === "watch" || command === "multi") {
         return resp.error(`ERR ${command} inside MULTI is not allowed`);
