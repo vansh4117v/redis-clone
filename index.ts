@@ -14,6 +14,7 @@ const server = net.createServer((connection: RedisConnection) => {
 
   connection.on("close", () => {
     memoryStore.removeBlockedClientById(clientId);
+    memoryStore.removeSubscriptionConnection(connection);
     console.log(`Client disconnected: ${clientId}`);
   });
 

@@ -3,18 +3,20 @@ import {
   type RedisStoredValue,
   type BlockedClient,
   resp,
-  type Transaction,
+  RedisConnection,
 } from "../utils/types.js";
 
 class MemoryStore {
-  private store: Map<string, RedisStoredValue>;
-  private expirations: Map<string, number>;
-  private blockedClients: Map<string, BlockedClient[]>;
+  private store: Map<string, RedisStoredValue>;               // key : value
+  private expirations: Map<string, number>;                   // key : expiration timestamp
+  private blockedClients: Map<string, BlockedClient[]>;       // key : array of blocked clients
+  private subscriptions: Map<string, Set<RedisConnection>>;   // key : set of subscribed clients
 
   constructor() {
     this.store = new Map();
     this.expirations = new Map();
     this.blockedClients = new Map();
+    this.subscriptions = new Map();
   }
 
   set(key: string, value: RedisStoredValue, ttl: number | null = null): void {
@@ -117,6 +119,37 @@ class MemoryStore {
     }, 100);
   }
 
+  addSubscription(channels: string[], connection: RedisConnection): void {
+    for (const channel of channels) {
+      const subscribers = this.subscriptions.get(channel) || new Set<RedisConnection>();
+      subscribers.add(connection);
+      this.subscriptions.set(channel, subscribers);
+    }
+  }
+
+  getSubscribers(channel: string): Set<RedisConnection> | undefined {
+    return this.subscriptions.get(channel);
+  }
+
+  removeSubscriptionChannel(channel: string, connection: RedisConnection): void {
+    const subscribers = this.subscriptions.get(channel);
+    if (subscribers) {
+      subscribers.delete(connection);
+      if (subscribers.size === 0) {
+        this.subscriptions.delete(channel);
+      } else {
+        this.subscriptions.set(channel, subscribers);
+      }
+    }
+  }
+
+  removeSubscriptionConnection(connection: RedisConnection): void {
+    if (connection.pubSub?.channels) {
+      for (const channel of connection.pubSub.channels) {
+        this.removeSubscriptionChannel(channel, connection);
+      }
+    }
+  }
 }
 
 export const memoryStore = new MemoryStore();

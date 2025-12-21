@@ -12,6 +12,9 @@ import { type RESPReply, type RedisConnection } from "../utils/types.js";
 import { xaddHandler, xrangeHandler, xreadHandler } from "./stream/index.js";
 import { multiHandler } from "./transactions/multi.js";
 import { watchHandler } from "./transactions/watchHandler.js";
+import { subscribeHandler } from "./pub-sub/subscribe.js";
+import { publishHandler } from "./pub-sub/publish.js";
+import { unsubscribeHandler } from "./pub-sub/unsubscribe.js";
 
 export type CommandHandler = (commands: string[], connection: RedisConnection) => RESPReply | void;
 
@@ -42,4 +45,9 @@ export const commandRegistry: Record<string, CommandHandler> = {
   multi: multiHandler,
   watch: watchHandler,
   // exec and discard are handled separately in commands/transactions/transactionHandler.ts
+
+  // Pub/Sub
+  subscribe: subscribeHandler,
+  publish: publishHandler,
+  unsubscribe: unsubscribeHandler,
 };
