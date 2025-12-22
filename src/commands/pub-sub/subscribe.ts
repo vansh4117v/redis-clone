@@ -1,6 +1,6 @@
-import { encodeRESP } from "../../protocol/encodeRESP";
-import { memoryStore } from "../../store/memoryStore";
-import { resp, type RedisConnection, } from "../../utils/types";
+import { encodeRESP } from "../../protocol/encodeRESP.js";
+import { memoryStore } from "../../store/memoryStore.js";
+import { resp, type RedisConnection, } from "../../utils/types.js";
 
 export const subscribeHandler = (commands: string[], connection: RedisConnection) => {
   if (commands.length < 2) {

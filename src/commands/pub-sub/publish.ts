@@ -1,6 +1,6 @@
-import { encodeRESP } from "../../protocol/encodeRESP";
-import { memoryStore } from "../../store/memoryStore";
-import { type RedisConnection, resp } from "../../utils/types";
+import { encodeRESP } from "../../protocol/encodeRESP.js";
+import { memoryStore } from "../../store/memoryStore.js";
+import { type RedisConnection, resp } from "../../utils/types.js";
 
 export const publishHandler = (commands: string[], connection: RedisConnection) => {
   if (commands.length !== 3) {

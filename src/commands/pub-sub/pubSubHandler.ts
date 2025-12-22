@@ -1,7 +1,7 @@
-import { encodeRESP } from "../../protocol/encodeRESP";
-import { RedisConnection, resp } from "../../utils/types";
-import { subscribeHandler } from "./subscribe";
-import { unsubscribeHandler } from "./unsubscribe";
+import { encodeRESP } from "../../protocol/encodeRESP.js";
+import { RedisConnection, resp } from "../../utils/types.js";
+import { subscribeHandler } from "./subscribe.js";
+import { unsubscribeHandler } from "./unsubscribe.js";
 
 export const pubSubHandler = (commands: string[], connection: RedisConnection) => {
   const command = commands[0].toLowerCase();
