@@ -34,8 +34,14 @@ export interface Transaction {
   watchedKeys: Map<string, RedisStoredValue | undefined>;
 }
 
+export interface PubSub{
+  channels: Set<string>;
+  isPubSub?: boolean;
+}
+
 export interface RedisConnection extends Socket {
   transaction?: Transaction;
+  pubSub?: PubSub;
 }
 
 export type StringValue = { type: "string"; value: string };

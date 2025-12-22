@@ -6,7 +6,6 @@ import {
   type RedisConnection,
 } from "../../utils/types.js";
 import { memoryStore } from "../../store/memoryStore.js";
-// import { isInTransaction } from "../../utils/isInTransaction.js";
 
 export const blpopHandler = (
   commands: string[],
