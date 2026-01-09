@@ -176,7 +176,7 @@ export const xreadHandler = (commands: string[], connection: RedisConnection): R
     !(connection.transaction && connection.transaction.inMulti)
   ) {
     const blockedClient: BlockedClient = {
-      id: connection.remoteAddress + ":" + connection.remotePort,
+      id: connection.clientInfo.addr,
       socket: connection,
       keys: Array.from(blockedStreams.keys()),
       deadline: timeout === 0 ? null : Date.now() + timeout,

@@ -43,7 +43,7 @@ export const blpopHandler = (
 
   const deadline = timeout === 0 ? null : Date.now() + timeout * 1000;
   const blockedClient: BlockedClient = {
-    id: socket.remoteAddress + ":" + socket.remotePort,
+    id: socket.clientInfo.addr,
     socket: socket,
     keys: keys,
     deadline: deadline,
