@@ -15,6 +15,7 @@ import { watchHandler } from "./transactions/watchHandler.js";
 import { subscribeHandler } from "./pub-sub/subscribe.js";
 import { publishHandler } from "./pub-sub/publish.js";
 import { unsubscribeHandler } from "./pub-sub/unsubscribe.js";
+import { clientCommandHandler } from "./client/clientCommandHandler.js";
 
 export type CommandHandler = (commands: string[], connection: RedisConnection) => RESPReply | void;
 
@@ -50,4 +51,7 @@ export const commandRegistry: Record<string, CommandHandler> = {
   subscribe: subscribeHandler,
   publish: publishHandler,
   unsubscribe: unsubscribeHandler,
+
+  // Client commands
+  client: clientCommandHandler,
 };

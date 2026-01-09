@@ -4,8 +4,12 @@ import { commandHandler } from "./src/commands/commandHandler.js";
 import { memoryStore } from "./src/store/memoryStore.js";
 import { RedisConnection } from "./src/utils/types.js";
 
-const server = net.createServer((connection: RedisConnection) => {
-  const clientId = `${connection.remoteAddress}:${connection.remotePort}`;
+const server = net.createServer((socket: net.Socket) => {
+  const connection: RedisConnection = Object.assign(socket, {
+    clientInfo: {
+      addr: `${socket.remoteAddress}:${socket.remotePort}`,
+    },
+  });
 
   connection.on("data", (data) => {
     const commandArrays = parseRESP(data);
@@ -18,13 +22,13 @@ const server = net.createServer((connection: RedisConnection) => {
   });
 
   connection.on("close", () => {
-    memoryStore.removeBlockedClientById(clientId);
+    memoryStore.removeBlockedClientById(connection.clientInfo.addr);
     memoryStore.removeSubscriptionConnection(connection);
-    console.log(`Client disconnected: ${clientId}`);
+    console.log(`Client disconnected: ${connection.clientInfo.addr}`);
   });
 
   connection.on("error", (err) => {
-    console.error(`Client ${clientId} error:`, err.message);
+    console.error(`Client ${connection.clientInfo.addr} error:`, err.message);
   });
 });
 
