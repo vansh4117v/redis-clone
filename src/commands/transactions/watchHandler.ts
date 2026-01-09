@@ -1,4 +1,4 @@
-import { type RedisConnection, resp, type Transaction } from "../../utils/types.js";
+import { type RedisConnection, type RedisStoredValue, resp, type Transaction } from "../../utils/types.js";
 import { memoryStore } from "../../store/memoryStore.js";
 
 export const watchHandler = (commands: string[], connection: RedisConnection) => {
@@ -17,7 +17,8 @@ export const watchHandler = (commands: string[], connection: RedisConnection) =>
 
     for (const key of keysToWatch) {
       const value = memoryStore.get(key);
-      newTransaction.watchedKeys.set(key, value);
+      const valueCopy = value === undefined ? undefined : { ...value }
+      newTransaction.watchedKeys.set(key, valueCopy);
     }
     connection.transaction = newTransaction;
   } else {
