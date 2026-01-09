@@ -1,6 +1,6 @@
 # Redis Clone
 
-A lightweight Redis-compatible server implementation written in TypeScript. This project implements core Redis functionality including string operations, list operations, streams, and transactions using the RESP (REdis Serialization Protocol).
+A lightweight Redis-compatible server implementation written in TypeScript.
 
 ## Features
 
@@ -62,15 +62,11 @@ A lightweight Redis-compatible server implementation written in TypeScript. This
   - Modular command implementations organized by data type
   - Transaction management system
 
-## Installation
 
-```bash
-npm install
-```
 
 ## Quick Start
 
-Build and run the server, then connect using redis-cli:
+**Build and run the server**
 
 ```bash
 # Build the project
@@ -79,14 +75,34 @@ npm run build
 
 # Start the server (listens on port 8001)
 npm start
+```
 
-# In a new terminal, connect with redis-cli
+**In a new terminal, connect with redis-cli**
+```bash
 redis-cli -p 8001
 ```
 
 **Don't have redis-cli installed?** Use Docker:
 ```bash
 docker run --rm -it --add-host=host.docker.internal:host-gateway redis:7 redis-cli -h host.docker.internal -p 8001
+```
+
+### Connect using client libraries
+
+You can also connect to this server programmatically using standard Redis client libraries (Node.js, Python, etc.) 
+
+Example - Node (using the `redis` package):
+
+```js
+import { createClient } from 'redis';
+
+const client = createClient({ socket: { host: '127.0.0.1', port: 8001 } });
+client.on('error', console.error);
+await client.connect();
+console.log(await client.ping());
+await client.set('mykey', 'hello');
+console.log(await client.get('mykey'));
+await client.quit();
 ```
 
 ### Development Mode
