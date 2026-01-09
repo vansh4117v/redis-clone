@@ -8,8 +8,13 @@ const server = net.createServer((connection: RedisConnection) => {
   const clientId = `${connection.remoteAddress}:${connection.remotePort}`;
 
   connection.on("data", (data) => {
-    const commands = parseRESP(data);
-    commandHandler(commands, connection);
+    const commandArrays = parseRESP(data);
+  
+    for (const commands of commandArrays) {
+      if (commands.length > 0) {
+        commandHandler(commands, connection);
+      }
+    }
   });
 
   connection.on("close", () => {

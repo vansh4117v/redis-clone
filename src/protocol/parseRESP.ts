@@ -1,16 +1,36 @@
-export const parseRESP = (data: Buffer): string[] => {
-  const commands = data.toString().split("\r\n");
-  const result: string[] = [];
-  if (!commands[0].startsWith("*")) return result;
-  const commandCount = parseInt(commands[0].slice(1));
+export const parseRESP = (data: Buffer): string[][] => {
+  const rawCommandsArray = data.toString().split("\r\n");
 
-  let i = 1;
-  while (result.length < commandCount) {
-    const lenLine = parseInt(commands[i++].slice(1));
-    if (lenLine) {
-      const command = commands[i++].substring(0, lenLine);
-      result.push(command);
+  const commandsArray: string[][] = [];
+  let i = 0;
+
+  while (i < rawCommandsArray.length) {
+    if (rawCommandsArray[i].startsWith("*")) {
+      const numberOfElements = parseInt(rawCommandsArray[i].substring(1));
+      const command: string[] = [];
+      i++;
+      for (let j = 0; j < numberOfElements; j++) {
+        if (rawCommandsArray[i]?.startsWith("$")) {
+          const lengthOfElement = parseInt(rawCommandsArray[i].substring(1));
+          i++;
+          if (i < rawCommandsArray.length) {
+            command.push(rawCommandsArray[i].substring(0, lengthOfElement));
+          }
+          i++;
+        } else {
+          console.error("Invalid RESP format at index", i);
+          i++;
+        }
+      }
+      if (command.length > 0) {
+        commandsArray.push(command);
+      }
+    } else if (rawCommandsArray[i] === "") {
+      i++;
+    } else {
+      console.error("Unexpected RESP data:", rawCommandsArray[i]);
+      i++;
     }
   }
-  return result;
+  return commandsArray;
 };
