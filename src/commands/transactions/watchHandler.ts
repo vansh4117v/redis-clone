@@ -1,5 +1,19 @@
-import { type RedisConnection, type RedisStoredValue, resp, type Transaction } from "../../utils/types.js";
+import {
+  type RedisConnection,
+  type RedisStoredValue,
+  resp,
+  type Transaction,
+} from "../../utils/types.js";
 import { memoryStore } from "../../store/memoryStore.js";
+
+const snapshotValue = (value: RedisStoredValue | undefined): RedisStoredValue | undefined =>
+  value === undefined ? undefined : { ...value };
+
+const setWatchedKeys = (watchedKeys: Map<string, RedisStoredValue | undefined>, keys: string[]) => {
+  for (const key of keys) {
+    watchedKeys.set(key, snapshotValue(memoryStore.get(key)));
+  }
+};
 
 export const watchHandler = (commands: string[], connection: RedisConnection) => {
   if (commands.length < 2) {
@@ -15,21 +29,15 @@ export const watchHandler = (commands: string[], connection: RedisConnection) =>
       watchedKeys: new Map(),
     };
 
-    for (const key of keysToWatch) {
-      const value = memoryStore.get(key);
-      const valueCopy = value === undefined ? undefined : { ...value }
-      newTransaction.watchedKeys.set(key, valueCopy);
-    }
+    setWatchedKeys(newTransaction.watchedKeys, keysToWatch);
     connection.transaction = newTransaction;
-  } else {
-    if (transaction.inMulti) {
-      return resp.error("ERR WATCH inside MULTI is not allowed");
-    }
-    for (const key of keysToWatch) {
-      // Re-watching a key updates its watched value to the current value
-      const value = memoryStore.get(key);
-      transaction.watchedKeys.set(key, value);
-    }
+    return resp.status("OK");
   }
+
+  if (transaction.inMulti) {
+    return resp.error("ERR WATCH inside MULTI is not allowed");
+  }
+
+  setWatchedKeys(transaction.watchedKeys, keysToWatch);
   return resp.status("OK");
 };
