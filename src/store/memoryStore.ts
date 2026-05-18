@@ -121,17 +121,26 @@ class MemoryStore {
 
   addSubscription(channels: string[], connection: RedisConnection): void {
     for (const channel of channels) {
-      const subscribers = this.subscriptions.get(channel) || new Set<RedisConnection>();
-      subscribers.add(connection);
-      this.subscriptions.set(channel, subscribers);
+      this.addSubscriptionChannel(channel, connection);
     }
+  }
+
+  addSubscriptionChannel(channel: string, connection: RedisConnection): number {
+    const subscribers = this.subscriptions.get(channel) || new Set<RedisConnection>();
+    subscribers.add(connection);
+    this.subscriptions.set(channel, subscribers);
+
+    const channelsSet = connection.pubSub?.channels || new Set<string>();
+    channelsSet.add(channel);
+    connection.pubSub = { channels: channelsSet, isPubSub: true };
+    return channelsSet.size;
   }
 
   getSubscribers(channel: string): Set<RedisConnection> | undefined {
     return this.subscriptions.get(channel);
   }
 
-  removeSubscriptionChannel(channel: string, connection: RedisConnection): void {
+  removeSubscriptionChannel(channel: string, connection: RedisConnection): number {
     const subscribers = this.subscriptions.get(channel);
     if (subscribers) {
       subscribers.delete(connection);
@@ -141,11 +150,19 @@ class MemoryStore {
         this.subscriptions.set(channel, subscribers);
       }
     }
+
+    if (connection.pubSub?.channels) {
+      connection.pubSub.channels.delete(channel);
+      connection.pubSub.isPubSub = connection.pubSub.channels.size > 0;
+      return connection.pubSub.channels.size;
+    }
+    return 0;
   }
 
   removeSubscriptionConnection(connection: RedisConnection): void {
     if (connection.pubSub?.channels) {
-      for (const channel of connection.pubSub.channels) {
+      const channels = Array.from(connection.pubSub.channels);
+      for (const channel of channels) {
         this.removeSubscriptionChannel(channel, connection);
       }
     }

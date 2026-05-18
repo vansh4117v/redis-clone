@@ -8,25 +8,19 @@ export const unsubscribeHandler = (commands: string[], connection: RedisConnecti
     channels = Array.from(connection.pubSub?.channels || []);
     if (channels.length === 0) {
       connection.write(
-        encodeRESP(
-          resp.array([resp.bulk("unsubscribe"), resp.bulk(null), resp.integer(0)])
-        )
+        encodeRESP(resp.array([resp.bulk("unsubscribe"), resp.bulk(null), resp.integer(0)])),
       );
       return;
     }
   } else {
     channels = commands.slice(1);
   }
-  const channelsSet = connection.pubSub?.channels || new Set<string>();
-
   for (const channel of channels) {
-    channelsSet.delete(channel);
-    memoryStore.removeSubscriptionChannel(channel, connection);
+    const subscriptionCount = memoryStore.removeSubscriptionChannel(channel, connection);
     connection.write(
       encodeRESP(
-        resp.array([resp.bulk("unsubscribe"), resp.bulk(channel), resp.integer(channelsSet.size)])
-      )
+        resp.array([resp.bulk("unsubscribe"), resp.bulk(channel), resp.integer(subscriptionCount)]),
+      ),
     );
   }
-  connection.pubSub = { channels: channelsSet, isPubSub: channelsSet.size > 0 };
 };

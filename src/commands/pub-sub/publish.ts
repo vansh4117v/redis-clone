@@ -12,15 +12,15 @@ export const publishHandler = (commands: string[], connection: RedisConnection) 
   const subscribers = memoryStore.getSubscribers(channel);
   let receivers = 0;
   if (subscribers) {
-    receivers = subscribers.size;
     for (const subscriber of subscribers) {
-      if (!subscriber.destroyed) {
-        subscriber.write(
-          encodeRESP(
-            resp.array([resp.bulk("message"), resp.bulk(channel), resp.bulk(message)])
-          )
-        );
+      if (subscriber.destroyed) {
+        memoryStore.removeSubscriptionChannel(channel, subscriber);
+        continue;
       }
+      subscriber.write(
+        encodeRESP(resp.array([resp.bulk("message"), resp.bulk(channel), resp.bulk(message)])),
+      );
+      receivers += 1;
     }
   }
   return resp.integer(receivers);
